@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Linea{
     String texto;
+    ArrayList<String> all_tweets = new ArrayList<String>();
 
     public Linea (String otexto){
         this.texto=otexto;
@@ -35,32 +36,42 @@ public class Linea{
         return max;
     }
 
-    public String substring(Integer longitud,String texto){
-        if(texto.length()<longitud){
+    public ArrayList<String> substring(Integer longitud,String texto){
 
-            return texto;
+
+        if(texto.length()<=longitud){
+            all_tweets.add(texto);
+            return all_tweets;
 
         } else {
             Linea linea = new Linea(texto);
             ArrayList<Integer> posicionesPunto = linea.returnPositions('.');
             Integer max = linea.closestPeriod(posicionesPunto);
+            //System.out.println("max es " + max.toString());
             if(max==0){
                 ArrayList<Integer> posicionesEspacio = linea.returnPositions(' ');
                 max = linea.closestPeriod(posicionesEspacio);
-            }
-            System.out.println("max es " + max);
-            System.out.println("length es "+texto.length());
+            } /*else if (max == 279){
+                max = 280;
 
-            String med_text = texto.substring(0,max-1);
-            String loQueQueda = texto.substring(max, texto.length()-1);
+            }*/
+
+            //System.out.println("max es " + max);
+            //System.out.println("length es "+texto.length());
+
+            String med_text = texto.substring(0,max+1);
+            all_tweets.add(med_text);
+            String loQueQueda = texto.substring(max+3, texto.length()-1);
             if(loQueQueda.length() > longitud) {
                 //Linea linea1 = new Linea(loQueQueda);
                 //llamada recursiva
                 this.substring(longitud, loQueQueda);
 
+            } else {
+                all_tweets.add(loQueQueda);
             }
 
-                return med_text;
+                return all_tweets;
         }
     }
 }
