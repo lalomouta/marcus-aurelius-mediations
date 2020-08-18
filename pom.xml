@@ -8,12 +8,36 @@
     <artifactId>marco-aurelio-meds</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <repositories>
+        <!-- This needs to be removed before checking in-->
+        <repository>
+            <id>central</id>
+            <name>central</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+        </repository>
+        <repository>
+            <id>repository-release</id>
+            <url>https://repository.apache.org/content/repositories/releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <dependencies><!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.12</version>
-            <scope>provided</scope>
+            <!--<scope>provided</scope>-->
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.twitter4j/twitter4j-core -->
         <dependency>
@@ -45,7 +69,12 @@
             <version>3.8.1</version>
             <type>maven-plugin</type>
         </dependency>
-
+            <dependency>
+                <groupId>org.apache.derby</groupId>
+                <artifactId>derby</artifactId>
+                <version>10.14.2.0</version>
+                <!--<scope>test</scope>-->
+            </dependency>
     </dependencies>
 
     <build>

@@ -61,7 +61,7 @@ public class Linea{
 
             String med_text = texto.substring(0,max+1);
             all_tweets.add(med_text);
-            String loQueQueda = texto.substring(max+3, texto.length()-1);
+            String loQueQueda = texto.substring(max+1, texto.length()-1);
             if(loQueQueda.length() > longitud) {
                 //Linea linea1 = new Linea(loQueQueda);
                 //llamada recursiva

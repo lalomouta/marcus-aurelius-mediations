@@ -9,26 +9,28 @@ import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
 import java.io.IOException;
+import java.sql.*;
 import java.util.List;
 
 
 public class MarcoAurelioMeditations {
+
+    private static String dbURL = "jdbc:derby:C:\\git\\marco-aurelio-meds\\marcus-aurelius-db;create=false;user=derby;password=derby";
+    private static String tableName = "tweets";
+    private static String query = "";
+    private static Connection connection = null;
+    private static Statement stmt = null;
+    private static Meditation todayMeditation = new Meditation();
+
     public static void main (String[] args) throws TwitterException, IOException {
-        Meditation todayMeditation = new Meditation();
-
-        File fichero_txt = new File("C:\\Users\\novac\\OneDrive\\Documentos\\100DaysOfCode\\marcus-aurelius-meditations\\paragraph-line-by-line.txt");
-        String[] array_txt = fichero_txt.readLinesIntoArray();
 
 
-        /*
-        Integer id = 1;
-        String med_text = id.toString() + ".- From my grandfather Verus I learned good morals and the government of my temper.\n From the reputation and remembrance of my father, modesty and a manly character.";
-        //la longitud maxima de un tweet son 280 caracteres,
-        // por eso la longitud del texto no debe superar 280 - longitud id (es un entero) - longitud(".- ")
-        System.out.println(med_text.length());
-        todayMeditation.setMed_id(id);
-        System.out.println(med_text);
-        todayMeditation.setMed_txt(med_text);
+
+        //File fichero_txt = new File("C:\\Users\\novac\\OneDrive\\Documentos\\100DaysOfCode\\marcus-aurelius-meditations\\paragraph-line-by-line.txt");
+        //String[] array_txt = fichero_txt.readLinesIntoArray();
+
+        createConnection();
+        selectTweet();
 
 
         ConfigurationBuilder conf = new ConfigurationBuilder().setDebugEnabled(true)
@@ -41,7 +43,65 @@ public class MarcoAurelioMeditations {
         Twitter twitter = tf.getInstance();
         Status status = twitter.updateStatus(todayMeditation.getMed_txt());
         System.out.println("Successfully updated the status to [" + status.getText() + "].");
-        */
 
+        updateTweetedTweet();
+        shutdownConnection();
+
+    }
+
+    private static void createConnection(){
+        try{
+            Class.forName("org.apache.derby.jdbc.EmbeddedDriver").newInstance();
+            connection = DriverManager.getConnection(dbURL);
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private static void selectTweet(){
+        try{
+            stmt = connection.createStatement();
+            ResultSet resultSet = stmt.executeQuery("SELECT * FROM "+tableName + " where wastweeted='false' ORDER BY id FETCH first row ONLY");
+            while(resultSet.next()){
+
+                todayMeditation.setMed_id(resultSet.getInt(1));
+                todayMeditation.setMed_txt(resultSet.getString(2));
+
+            }
+            resultSet.close();
+            stmt.close();
+
+        } catch (SQLException sqlException){
+            sqlException.printStackTrace();
+        }
+    }
+
+    private static void updateTweetedTweet(){
+        try{
+            stmt = connection.createStatement();
+            query = "UPDATE " + tableName + " set wastweeted='true' " +
+                    " WHERE id =" + todayMeditation.getMed_id();
+
+            stmt.execute(query);
+            stmt.close();
+
+        } catch (SQLException sqlException){
+            System.out.println("Query que se ejecuta => " + query);
+            sqlException.printStackTrace();
+        }
+    }
+
+    private static void shutdownConnection(){
+        try{
+            if(stmt != null) { stmt.close();}
+            if(connection != null ) {
+                connection.close();
+                DriverManager.getConnection(dbURL + ";shutdown=true");
+
+            }
+        } catch (SQLException sqlException){
+            sqlException.printStackTrace();
+        }
     }
 }

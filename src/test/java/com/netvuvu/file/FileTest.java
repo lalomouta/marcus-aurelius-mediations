@@ -17,6 +17,7 @@ class FileTest {
         String[] array_txt = fichero_txt.readLinesIntoArray();
 
         Integer indice_fichero = 1;
+
         for (String line : array_txt) {
 
             Linea linea = new Linea(line);
@@ -24,8 +25,17 @@ class FileTest {
             ArrayList<String> all_tweets = linea.substring(280,line);
 
             Integer indice_tweet=1;
+
             for(String tweet : all_tweets) {
-                fichero_txt.writeToFile("C:\\Users\\novac\\OneDrive\\Documentos\\100DaysOfCode\\marcus-aurelius-meditations\\output\\paragraph-line-by-line_" + indice_fichero.toString() +"_"+ indice_tweet.toString() + ".txt", tweet);
+                String indice_fichero_string = indice_fichero.toString();
+                String indice_tweet_string = indice_tweet.toString();
+                while(indice_fichero_string.length()<3) {
+                    indice_fichero_string = "0" + indice_fichero_string;
+                }
+                while(indice_tweet_string.length()<3){
+                    indice_tweet_string="0"+ indice_tweet_string;
+                }
+                fichero_txt.writeToFile("C:\\Users\\novac\\OneDrive\\Documentos\\100DaysOfCode\\marcus-aurelius-meditations\\output\\paragraph-line-by-line_" + indice_fichero_string +"_"+ indice_tweet_string + ".txt", tweet);
 
                 indice_tweet++;
             }
